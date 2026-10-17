@@ -6,6 +6,7 @@ from urllib.error import HTTPError
 from urllib.parse import quote, urlparse
 import ipaddress
 from file_transfer import download_file, spool_root
+from relay_discovery import discover_gateway
 
 root=Path(__file__).resolve().parent
 print('正在检查虚拟机环境与连接配置。',flush=True)
@@ -14,12 +15,17 @@ machines=win32com.client.GetObject('winmgmts:').ExecQuery('SELECT Model,Manufact
 if not any(str(m.Model)=='Virtual Machine' and 'Microsoft' in str(m.Manufacturer) for m in machines):
     raise SystemExit('此连接器只能在 Hyper-V 虚拟机内部启动，主桌面不会执行窗口操作')
 config=json.loads((root/'vm-agent.json').read_text(encoding='utf-8-sig'))
-base=config['relay'].rstrip('/')
+try:
+    discovered_gateway=discover_gateway()
+except Exception as exc:
+    raise SystemExit('无法自动发现主机桥接地址：'+str(exc))
+base='http://'+discovered_gateway+':8791'
 address=urlparse(base)
 if (address.scheme!='http' or address.port!=8791 or address.path or address.username
         or address.password or address.query or address.fragment or not config.get('token')
         or not ipaddress.ip_address(address.hostname).is_private):
-    raise SystemExit('请使用部署包生成的虚拟机配置')
+    raise SystemExit('自动发现的主机桥接地址不符合私网连接要求')
+print('已自动发现主机工作台：'+address.hostname+':8791',flush=True)
 relay_opener=build_opener(ProxyHandler({}))
 run_id=str(uuid.uuid4())
 events=queue.Queue(maxsize=200)

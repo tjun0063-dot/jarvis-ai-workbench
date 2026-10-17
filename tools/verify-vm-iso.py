@@ -11,7 +11,7 @@ total=0
 for file in manifest['files']:
     data=read(file['path']);total+=len(data)
     assert hashlib.sha256(data).hexdigest().upper()==file['sha256'],file['path']
-allowed={'wechat_assistant.py','vm_agent.py','file_transfer.py','requirements-wechat.txt','vm-agent.json'}
+allowed={'wechat_assistant.py','vm_agent.py','file_transfer.py','relay_discovery.py','requirements-wechat.txt','vm-agent.json'}
 for path in [f['path'].replace('\\','/') for f in manifest['files']]:
     if path.startswith('workbench/'):
         assert path.split('/')[-1] in allowed,path

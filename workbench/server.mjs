@@ -10,6 +10,7 @@ import {migrateLibrary,scanNative,loadNative,parseImport} from './library.mjs';
 import {createInbound} from './remote.mjs';
 import {TaskPool} from './task_pool.mjs';
 import {createVmRelay} from './vm_relay.mjs';
+import {discoverVmBind} from './vm_network.mjs';
 import {updateCodexProgress,deliverTask} from './task_status.mjs';
 import {codexEnvironment} from './codex_network.mjs';
 import {personalMuseRequest,museThreadId} from './personal_muse.mjs';
@@ -91,12 +92,12 @@ if(fs.existsSync(vmConfigFile)){
  try{
   const cfg=JSON.parse(fs.readFileSync(vmConfigFile,'utf8').replace(/^\uFEFF/,''));
   if(cfg.enabled){
-   const dedicated=Object.entries(os.networkInterfaces()).some(([name,addresses])=>name.startsWith('vEthernet (')&&addresses.some(a=>a.address===cfg.bind&&!a.internal));
-   if(!dedicated)throw new Error('虚拟机桥只能绑定当前 Hyper-V 虚拟网络地址');
+   const discoveredBind=discoverVmBind();
+   if(cfg.bind!==discoveredBind){cfg.bind=discoveredBind;fs.writeFileSync(vmConfigFile,JSON.stringify(cfg,null,2));}
    if(assistantProcess)throw new Error('请先停止主桌面监听');
    assistantConfig={...assistantConfig,transport:'vm'};
    fs.writeFileSync(path.join(data,'assistant.json'),JSON.stringify(assistantConfig));
-   vmRelay=createVmRelay({bind:cfg.bind,port:8791,token:cfg.token,account:assistantConfig.account,incomingDirectory:path.join(data,'incoming-materials'),
+   vmRelay=createVmRelay({bind:discoveredBind,port:8791,token:cfg.token,account:assistantConfig.account,incomingDirectory:path.join(data,'incoming-materials'),
     onEvent:e=>handleAssistantEvent(e),onDisconnect:reason=>{channels['wechat-account']={status:'虚拟机未连接',error:reason,qr:null};}});
    vmRelay.listen().then(()=>{channels['wechat-account']={status:'等待虚拟机连接',error:'',qr:null};}).catch(e=>{channels['wechat-account']={status:'桥接启动失败',error:e.message,qr:null};vmRelay=null;});
   }

@@ -1,6 +1,6 @@
 param([switch]$RefreshConfig,[string]$OutputName='Jarvis-Setup-v2.iso')
 $ErrorActionPreference='Stop'
-if ($OutputName -notmatch '^Jarvis-Setup(?:-[a-zA-Z0-9]+)?\.iso$') { throw '部署光盘文件名无效' }
+if ($OutputName -notmatch '^Jarvis-Setup(?:-[a-zA-Z0-9-]+)?\.iso$') { throw '部署光盘文件名无效' }
 $taskRoot=[IO.Path]::GetFullPath($PSScriptRoot)
 $taskStage=Join-Path $taskRoot 'payload'
 if ((Test-Path -LiteralPath $taskStage) -and -not $RefreshConfig) { throw '已有部署目录，未覆盖；配置桥接后可用 -RefreshConfig 重新生成部署光盘' }

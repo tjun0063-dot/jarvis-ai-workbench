@@ -13,7 +13,8 @@ from update_launcher import replace_launcher
 FILES=('background_agent.py','launch_wechat.py','test_accessibility.py','diagnose_wechat.py',
        'refresh_bridge.py','repair_client.py','guest_common.py','windows_signature.py',
        'Start-Agent.cmd','Check-Agent.cmd','Stop-Agent.cmd','Open-WeChat.cmd',
-       'workbench/vm_agent.py','workbench/wechat_assistant.py','workbench/file_transfer.py')
+       'workbench/vm_agent.py','workbench/wechat_assistant.py','workbench/file_transfer.py',
+       'workbench/relay_discovery.py')
 
 
 def main(root=None,media=None):
