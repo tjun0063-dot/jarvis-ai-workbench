@@ -1,0 +1,41 @@
+# Runtime state and credentials
+workbench/data/
+workbench/projects/
+workbench/.wechat-venv/
+workbench/.muse-venv/
+workbench/node_modules/
+workbench/tools/
+**/__pycache__/
+*.pyc
+*.log
+
+# VM images, installers, generated media and local identity
+vm/media/
+vm/machines/
+vm/payload/
+vm/wheels/
+vm/attachment-update/
+vm/accessibility-test/
+vm/background-update/
+vm/client-repair-test/
+vm/listening-fix/
+vm/window-diagnostics/
+vm/vm.json
+vm/vm-agent.json
+vm/*before*
+vm/relay-*.json
+*.iso
+*.vhd
+*.vhdx
+*.exe
+*.msi
+*.zip
+*.7z
+*.whl
+
+# Local developer output
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

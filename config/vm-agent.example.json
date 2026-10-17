@@ -1,0 +1,16 @@
+{
+  "listenChats": [
+    {
+      "chat": "示例群聊",
+      "kind": "group"
+    },
+    {
+      "chat": "示例好友备注",
+      "kind": "friend"
+    }
+  ],
+  "relay": "http://192.168.100.1:8791",
+  "account": "贾维斯",
+  "token": "请替换为64位随机十六进制令牌"
+}
+
